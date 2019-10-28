@@ -54,8 +54,15 @@ export default class Movie extends Component {
   render() {
     return (
       <div className="rmdb-movie">
-        <Navigation />
-        <MovieInfo />
+        {this.state.movie ? 
+        <div>
+          <Navigation movie={this.props.location.movieName} />
+          <MovieInfo movie={this.state.movie} />
+          
+
+
+        </div>
+        }
          <MovieInfoBar />
       
         <Spinner />

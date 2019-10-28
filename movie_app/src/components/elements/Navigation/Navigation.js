@@ -5,10 +5,16 @@ import './Navigation.css'
 
 
 
-const Navigation = () => {
+const Navigation = (props) => {
   return (
-    <div>
-      Navigation
+    <div className="rmdb-navigation">
+    <div className="rmdb-navigation-content">
+        <Link to="/">
+            <p>Home</p>
+        </Link>
+        <p></p>
+        <p>{props.movie}</p>
+ </div>
     </div>
   )
 }
