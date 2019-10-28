@@ -5,7 +5,7 @@ import Spinner from '../elements/Spinner/Spinner';
 import SearchBar from '../elements/SearchBar/SearchBar';
 import FourColGrid from '../elements/FourColGrid/FourColGrid';
 import LoadMoreBtn from '../elements/LoadMoreBtn/LoadMoreBtn'
-import   {API_KEY, API_URL, IMAGE_BASE_URL, BACKDROP_SIZE} from '../../config.js'
+import   {API_KEY, API_URL, IMAGE_BASE_URL, BACKDROP_SIZE, POSTER_SIZE} from '../../config.js'
 
 
 import './Home.css'
@@ -23,11 +23,16 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+    if(localStorage.getItem('HomeState')) {
+
+        const state = JSON.parse(localStorage.getItem('HomeState'))
+        this.setState({...state})
+    }else {
     this.setState({ loading: true});
     const endPoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
     this.fetchItems(endPoint)
   }
-
+  }
   loadMoreItems = () => {
     let endPoint = '';
     this.setState({ loading: true })
@@ -37,7 +42,7 @@ export default class Home extends Component {
 
     } else {
 
-      endPoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&query${this.state.searchTerm}&page=${this.state.currentPage + 1}`;
+      endPoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&query=${this.state.searchTerm}&page=${this.state.currentPage + 1}`;
     }
     this.fetchItems(endPoint)
   }
@@ -52,9 +57,34 @@ export default class Home extends Component {
         loading: false,
         currentPage: result.page,
         totalPages: result.total_pages
+      },() => {
+
+        localStorage.setItem('HomeState', JSON.stringify(this.state));
       })
     })
+    .catch( error => console.error('Error:', error))
   }
+
+
+  searchItems = (searchTerm) => {
+
+    let endPoint = ''
+    this.setState({
+      movies: [],
+      loading: true,
+      searchTerm
+    })
+
+    if ( searchTerm === '') {
+
+      endPoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+    }else {
+      endPoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}`;
+    }
+    this.fetchItems(endPoint)
+  }
+
+
   render() {
     return (
       <div className = "rmdb-home">
@@ -65,11 +95,27 @@ export default class Home extends Component {
          title={this.state.heroImage.original_title}
          text={this.state.heroImage.overview}
           />
-        <SearchBar />
+        <SearchBar callback={this.searchItems}/>
         </div> : null }
-        <FourColGrid />
-        <Spinner />
-        <LoadMoreBtn />
+        <div className='rmdb-home-grid'>
+        <FourColGrid 
+        header={this.state.searchTerm ? 'Search Result' : 'Popular Movies'}
+        loading={this.state.loading}>
+          {this.state.movies.map((element,i) => {
+            return <MovieThumb
+                key={i}
+                clickable={true}
+                image={element.poster_path ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`: './images/no_image.jpg'}
+                movieId={element.id}
+                movieName={element.original_title}
+                />
+          })}
+        </FourColGrid>
+        {this.state.loading ? <Spinner /> : null}
+        {(this.state.currentPage <= this.state.totalPages && !this.state.loading ) ? 
+         <LoadMoreBtn text="Load More" onClick={this.loadMoreItems}/> : null }
+        </div>
+        
       </div>
     )
   }
