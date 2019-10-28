@@ -11,8 +11,11 @@ import './Movie.css'
 export default class Movie extends Component {
   render() {
     return (
-      <div>
-        Movie
+      <div className="rmdb-movie">
+        <Navigation />
+        <MovieInfo />
+        <FourColGrid />
+        <Spinner />
       </div>
     )
   }
