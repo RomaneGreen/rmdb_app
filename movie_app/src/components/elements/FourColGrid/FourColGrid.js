@@ -24,7 +24,7 @@ const FourColGrid = (props) => {
 
 
 
-FourColGrid.PropTypes = {
+FourColGrid.propTypes = {
 
   header: PropTypes.string,
   loading: PropTypes.bool

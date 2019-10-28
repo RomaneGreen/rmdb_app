@@ -1,5 +1,5 @@
 import React from 'react';
-import FontAwesome from 'react-fontawsome';
+import FontAwesome from 'react-fontawesome';
 import {calcTime, convertMoney } from '../../../helpers.js'
 import './MovieInfoBar.css'
 import MovieThumb from '../MovieThumb/MovieThumb'
@@ -7,12 +7,10 @@ import MovieThumb from '../MovieThumb/MovieThumb'
 
 
 
-import React from 'react'
-
 const MovieInfoBar = (props) => {
   return (
     <div>
-      MovieInfoBar
+      MovieInfoBars
     </div>
   )
 }
